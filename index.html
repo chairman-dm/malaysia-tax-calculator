@@ -29,44 +29,66 @@
       }]
     }
     </script>
+    <style>
+        /* Smooth Custom Animations for Live Weather GUI */
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes float-cloud {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(3px); }
+        }
+        @keyframes rain-drop {
+            0% { transform: translateY(-2px); opacity: 1; }
+            100% { transform: translateY(4px); opacity: 0; }
+        }
+        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
+        .animate-float { animation: float-cloud 3s ease-in-out infinite; }
+        .animate-rain { animation: rain-drop 0.8s linear infinite; }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen p-4 sm:p-6">
     <div class="max-w-3xl mx-auto py-6 space-y-6">
 
-        <!-- Live Malaysia Utility Bar with City Dropdown -->
-        <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-md space-y-4">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-800 pb-3">
-                <div class="flex items-center space-x-2">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Region / City:</span>
-                    <select id="citySelect" onchange="updateLocationData()" class="bg-slate-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
-                        <option value="kl" selected>Kuala Lumpur</option>
-                        <option value="penang">Penang (George Town)</option>
-                        <option value="jb">Johor Bahru</option>
-                        <option value="kuching">Kuching (Sarawak)</option>
-                        <option value="kk">Kota Kinabalu (Sabah)</option>
-                    </select>
-                </div>
-                <div>
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2">Malaysia Time (MYT):</span>
-                    <span id="liveTime" class="text-sm font-bold text-indigo-400">--:--:--</span>
-                </div>
+        <!-- Single-Row Live Utility Bar -->
+        <div class="bg-slate-900 text-white rounded-2xl px-4 py-3 shadow-md flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 text-xs">
+            
+            <!-- City Selector -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <span class="font-medium text-slate-400">City:</span>
+                <select id="citySelect" onchange="updateLocationData()" class="bg-slate-800 text-white font-semibold px-2.5 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                    <option value="kl" selected>Kuala Lumpur</option>
+                    <option value="penang">Penang</option>
+                    <option value="jb">Johor Bahru</option>
+                    <option value="kuching">Kuching</option>
+                    <option value="kk">Kota Kinabalu</option>
+                </select>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center sm:text-left">
-                <!-- Live Weather -->
-                <div class="p-1">
-                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Local Temperature</span>
-                    <span id="liveWeather" class="text-lg font-bold text-slate-100">Loading...</span>
-                </div>
-                <!-- Live Haze / Air Quality -->
-                <div class="p-1 border-t sm:border-t-0 sm:border-l border-slate-800 sm:pl-4">
-                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Haze / Air Quality (US AQI)</span>
-                    <div class="flex items-center justify-center sm:justify-start space-x-2 mt-0.5">
-                        <span id="liveAqi" class="text-lg font-bold text-slate-100">--</span>
-                        <span id="aqiBadge" class="text-xs px-2 py-0.5 rounded font-medium bg-slate-800 text-slate-300">Fetching</span>
-                    </div>
-                </div>
+            <!-- Live Time (MYT) -->
+            <div class="flex items-center space-x-1.5 shrink-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-medium text-slate-400">MYT:</span>
+                <span id="liveTime" class="font-bold text-indigo-300">--:--:--</span>
             </div>
+
+            <!-- Weather with Dynamic Moving GUI Icon -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <div id="weatherIconContainer" class="w-6 h-6 flex items-center justify-center text-amber-400">
+                    <!-- Default Sunny Spinning GUI Icon -->
+                    <svg class="w-5 h-5 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 9H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+                </div>
+                <span id="liveWeather" class="font-bold text-slate-100">Loading...</span>
+            </div>
+
+            <!-- Haze / AQI Status Badge -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <span class="font-medium text-slate-400">AQI:</span>
+                <span id="liveAqi" class="font-bold text-slate-100">--</span>
+                <span id="aqiBadge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-800 text-slate-300">Fetching</span>
+            </div>
+
         </div>
 
         <!-- Header -->
@@ -155,7 +177,6 @@
     </div>
 
     <script>
-        // City Coordinates Map
         const CITIES = {
             kl: { name: 'Kuala Lumpur', lat: 3.139, lon: 101.6869 },
             penang: { name: 'Penang', lat: 5.4164, lon: 100.3327 },
@@ -173,7 +194,22 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Fetch Live Weather & AQI for selected city
+        // Helper: Render Dynamic Moving Weather Icons
+        function renderWeatherIcon(code) {
+            const container = document.getElementById('weatherIconContainer');
+            // Codes: 0=Clear, 1-3=Cloudy, 45/48=Haze/Fog, 51-67/80-82=Rain, 95-99=Thunderstorm
+            if (code === 0) { // Clear/Sunny (Rotating Sun)
+                container.innerHTML = `<svg class="w-5 h-5 text-amber-400 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 9H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>`;
+            } else if (code >= 1 && code <= 3) { // Cloudy (Floating Cloud)
+                container.innerHTML = `<svg class="w-5 h-5 text-slate-300 animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>`;
+            } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { // Rain (Animated Raindrops)
+                container.innerHTML = `<svg class="w-5 h-5 text-sky-400 animate-rain" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14a5 5 0 00-9.582-1.709A4.001 4.001 0 003 15a4 4 0 004 4h12a4 4 0 000-8zm-7 4v2m-4-2v2m8-2v2"></path></svg>`;
+            } else { // Haze / Fog / Default
+                container.innerHTML = `<svg class="w-5 h-5 text-orange-300 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>`;
+            }
+        }
+
+        // Fetch Live Weather & AQI
         async function updateLocationData() {
             const cityKey = document.getElementById('citySelect').value;
             const city = CITIES[cityKey] || CITIES.kl;
@@ -187,7 +223,9 @@
                 const weatherData = await weatherRes.json();
                 if (weatherData.current_weather) {
                     const temp = Math.round(weatherData.current_weather.temperature);
-                    document.getElementById('liveWeather').innerText = `${temp}°C (${city.name})`;
+                    const code = weatherData.current_weather.weathercode;
+                    document.getElementById('liveWeather').innerText = `${temp}°C`;
+                    renderWeatherIcon(code);
                 }
 
                 // Air Quality Request
@@ -199,27 +237,26 @@
                     
                     const badge = document.getElementById('aqiBadge');
                     if (aqi <= 50) {
-                        badge.innerText = 'Good / Clear';
-                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-emerald-900 text-emerald-300';
+                        badge.innerText = 'Clear';
+                        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-900/80 text-emerald-300 border border-emerald-700/50';
                     } else if (aqi <= 100) {
                         badge.innerText = 'Moderate';
-                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-yellow-900 text-yellow-300';
+                        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-yellow-900/80 text-yellow-300 border border-yellow-700/50';
                     } else if (aqi <= 150) {
-                        badge.innerText = 'Unhealthy (Haze)';
-                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-orange-900 text-orange-300';
+                        badge.innerText = 'Unhealthy Haze';
+                        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-900/80 text-orange-300 border border-orange-700/50';
                     } else {
-                        badge.innerText = 'Hazardous Haze';
-                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-red-900 text-red-300';
+                        badge.innerText = 'Hazardous';
+                        badge.className = 'px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-900/80 text-red-300 border border-red-700/50';
                     }
                 }
             } catch (err) {
-                document.getElementById('liveWeather').innerText = `30°C (${city.name})`;
+                document.getElementById('liveWeather').innerText = '30°C';
                 document.getElementById('liveAqi').innerText = '42';
-                document.getElementById('aqiBadge').innerText = 'Good / Clear';
+                document.getElementById('aqiBadge').innerText = 'Clear';
             }
         }
 
-        // Initial Load
         updateLocationData();
 
         // Tax Calculation Logic
