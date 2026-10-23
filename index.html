@@ -76,7 +76,6 @@
             <!-- Weather with Dynamic Moving GUI Icon -->
             <div class="flex items-center space-x-2 shrink-0">
                 <div id="weatherIconContainer" class="w-6 h-6 flex items-center justify-center text-amber-400">
-                    <!-- Default Sunny Spinning GUI Icon -->
                     <svg class="w-5 h-5 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 9H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>
                 </div>
                 <span id="liveWeather" class="font-bold text-slate-100">Loading...</span>
@@ -130,7 +129,7 @@
             </button>
 
             <!-- Results Section -->
-            <div id="results" class="hidden mt-6 border-t border-slate-200 pt-6 space-y-4">
+            <div id="results" class="hidden mt-6 border-t border-slate-200 pt-6 space-y-6">
                 <h2 class="text-xl font-semibold text-slate-900">Estimation Results</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
@@ -146,8 +145,52 @@
                         <span id="resRate" class="text-xl font-bold text-slate-900">0.0%</span>
                     </div>
                 </div>
+
+                <!-- Monetisation / Partner Offers Section -->
+                <div class="bg-indigo-50/50 border border-indigo-100 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-indigo-900">Maximise Your Savings</span>
+                        <span class="text-[10px] text-slate-400 bg-white px-2 py-0.5 rounded border border-slate-200">Partner Offer</span>
+                    </div>
+                    <p class="text-xs text-slate-600">Looking to reduce your taxable income or manage your personal wealth better?</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <!-- Replace href with Involve Asia tracking link -->
+                        <a href="https://app.involve.asia" target="_blank" rel="noopener noreferrer" class="block bg-white p-3 rounded-lg border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition-all">
+                            <span class="block text-xs font-bold text-slate-800">High-Yield Savings & Investments</span>
+                            <span class="text-[11px] text-slate-500">Earn competitive interest on capital.</span>
+                        </a>
+                        <!-- Replace href with Involve Asia tracking link -->
+                        <a href="https://app.involve.asia" target="_blank" rel="noopener noreferrer" class="block bg-white p-3 rounded-lg border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition-all">
+                            <span class="block text-xs font-bold text-slate-800">Automated Financial Tools</span>
+                            <span class="text-[11px] text-slate-500">Track relief limits & spending automatically.</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </main>
+
+        <!-- 2026 Malaysia Tax Relief Checklist (GEO & Crawl Content) -->
+        <section class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="text-xl font-semibold text-slate-900">2026 Malaysia Tax Relief Highlights</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600">
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="font-bold text-slate-800 block mb-1">Individual Automatic Relief</span>
+                    <span>RM9,000 granted automatically to resident individual taxpayers in Malaysia.</span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="font-bold text-slate-800 block mb-1">Lifestyle Relief (Max RM2,500)</span>
+                    <span>Covers books, personal computers, smartphones, internet subscriptions, and sports equipment.</span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="font-bold text-slate-800 block mb-1">EPF & Life Insurance (Max RM4,000)</span>
+                    <span>Combined claims for voluntary/mandatory EPF contributions and life insurance policies.</span>
+                </div>
+                <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <span class="font-bold text-slate-800 block mb-1">Medical & Health Insurance (Max RM3,000)</span>
+                    <span>Relief for medical treatment, full health screening, and medical insurance premiums.</span>
+                </div>
+            </div>
+        </section>
 
         <!-- Reference Table -->
         <section class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-2xl p-6 sm:p-8 space-y-4">
@@ -197,14 +240,13 @@
         // Helper: Render Dynamic Moving Weather Icons
         function renderWeatherIcon(code) {
             const container = document.getElementById('weatherIconContainer');
-            // Codes: 0=Clear, 1-3=Cloudy, 45/48=Haze/Fog, 51-67/80-82=Rain, 95-99=Thunderstorm
-            if (code === 0) { // Clear/Sunny (Rotating Sun)
+            if (code === 0) {
                 container.innerHTML = `<svg class="w-5 h-5 text-amber-400 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 9H3m15.364 6.364l-1.414-1.414M7.05 7.05L5.636 5.636m12.728 0l-1.414 1.414M7.05 16.95l-1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"></path></svg>`;
-            } else if (code >= 1 && code <= 3) { // Cloudy (Floating Cloud)
+            } else if (code >= 1 && code <= 3) {
                 container.innerHTML = `<svg class="w-5 h-5 text-slate-300 animate-float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>`;
-            } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) { // Rain (Animated Raindrops)
+            } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
                 container.innerHTML = `<svg class="w-5 h-5 text-sky-400 animate-rain" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14a5 5 0 00-9.582-1.709A4.001 4.001 0 003 15a4 4 0 004 4h12a4 4 0 000-8zm-7 4v2m-4-2v2m8-2v2"></path></svg>`;
-            } else { // Haze / Fog / Default
+            } else {
                 container.innerHTML = `<svg class="w-5 h-5 text-orange-300 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>`;
             }
         }
@@ -218,7 +260,6 @@
             document.getElementById('liveAqi').innerText = '--';
 
             try {
-                // Weather Request
                 const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current_weather=true`);
                 const weatherData = await weatherRes.json();
                 if (weatherData.current_weather) {
@@ -228,7 +269,6 @@
                     renderWeatherIcon(code);
                 }
 
-                // Air Quality Request
                 const airRes = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=us_aqi`);
                 const airData = await airRes.json();
                 if (airData.current && airData.current.us_aqi !== undefined) {
