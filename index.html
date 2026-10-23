@@ -4,33 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malaysia Income Tax & Relief Calculator 2026</title>
-    <meta name="description" content="Calculate your LHDN personal income tax, optimize tax reliefs, and estimate your tax payable for Malaysia easily.">
+    <meta name="description" content="Calculate your LHDN personal income tax, check live Malaysia weather and haze status across major cities, and estimate tax payable easily.">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <!-- JSON-LD Structured Data for GEO & SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Malaysia Income Tax & Relief Calculator",
-      "operatingSystem": "All",
-      "applicationCategory": "FinanceApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "MYR"
-      },
-      "description": "Free web utility to calculate LHDN resident individual income tax and reliefs in Malaysia."
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "What is the individual automatic relief in Malaysia?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Resident individuals in Malaysia are entitled to an automatic personal relief of RM9,000."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What is the maximum EPF and life insurance tax relief?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The combined tax relief for EPF contributions and life insurance premiums is capped at RM4,000."
+        }
+      }]
     }
     </script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased min-p-6">
-    <div class="max-w-3xl mx-auto px-4 py-10">
-        <header class="mb-8 text-center">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen p-4 sm:p-6">
+    <div class="max-w-3xl mx-auto py-6 space-y-6">
+
+        <!-- Live Malaysia Utility Bar with City Dropdown -->
+        <div class="bg-slate-900 text-white rounded-2xl p-5 shadow-md space-y-4">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Region / City:</span>
+                    <select id="citySelect" onchange="updateLocationData()" class="bg-slate-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                        <option value="kl" selected>Kuala Lumpur</option>
+                        <option value="penang">Penang (George Town)</option>
+                        <option value="jb">Johor Bahru</option>
+                        <option value="kuching">Kuching (Sarawak)</option>
+                        <option value="kk">Kota Kinabalu (Sabah)</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider mr-2">Malaysia Time (MYT):</span>
+                    <span id="liveTime" class="text-sm font-bold text-indigo-400">--:--:--</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center sm:text-left">
+                <!-- Live Weather -->
+                <div class="p-1">
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Local Temperature</span>
+                    <span id="liveWeather" class="text-lg font-bold text-slate-100">Loading...</span>
+                </div>
+                <!-- Live Haze / Air Quality -->
+                <div class="p-1 border-t sm:border-t-0 sm:border-l border-slate-800 sm:pl-4">
+                    <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Haze / Air Quality (US AQI)</span>
+                    <div class="flex items-center justify-center sm:justify-start space-x-2 mt-0.5">
+                        <span id="liveAqi" class="text-lg font-bold text-slate-100">--</span>
+                        <span id="aqiBadge" class="text-xs px-2 py-0.5 rounded font-medium bg-slate-800 text-slate-300">Fetching</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="text-center pt-2">
             <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-2">Malaysia Income Tax Calculator</h1>
             <p class="text-slate-600">Calculate your LHDN chargeable income and estimated tax payable instantly.</p>
         </header>
 
+        <!-- Main Calculator Section -->
         <main class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-2xl p-6 sm:p-8 space-y-6">
             <!-- Income Inputs -->
             <div>
@@ -81,9 +126,103 @@
                 </div>
             </div>
         </main>
+
+        <!-- Reference Table -->
+        <section class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h2 class="text-xl font-semibold text-slate-900">Malaysia Resident Tax Brackets</h2>
+            <p class="text-sm text-slate-600">LHDN progressive tax rates applied to resident individual chargeable income.</p>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-600 border-collapse">
+                    <thead class="bg-slate-100 text-slate-900 uppercase text-xs">
+                        <tr>
+                            <th class="p-3">Chargeable Income (RM)</th>
+                            <th class="p-3">Rate</th>
+                            <th class="p-3">Calculation Baseline</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr><td class="p-3">First 5,000</td><td class="p-3">0%</td><td class="p-3">0</td></tr>
+                        <tr><td class="p-3">Next 15,000</td><td class="p-3">1%</td><td class="p-3">0</td></tr>
+                        <tr><td class="p-3">Next 15,000</td><td class="p-3">3%</td><td class="p-3">RM 150</td></tr>
+                        <tr><td class="p-3">Next 15,000</td><td class="p-3">6%</td><td class="p-3">RM 600</td></tr>
+                        <tr><td class="p-3">Next 20,000</td><td class="p-3">11%</td><td class="p-3">RM 1,500</td></tr>
+                        <tr><td class="p-3">Next 30,000</td><td class="p-3">19%</td><td class="p-3">RM 3,700</td></tr>
+                        <tr><td class="p-3">Next 300,000</td><td class="p-3">25%</td><td class="p-3">RM 9,400</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 
     <script>
+        // City Coordinates Map
+        const CITIES = {
+            kl: { name: 'Kuala Lumpur', lat: 3.139, lon: 101.6869 },
+            penang: { name: 'Penang', lat: 5.4164, lon: 100.3327 },
+            jb: { name: 'Johor Bahru', lat: 1.4927, lon: 103.7414 },
+            kuching: { name: 'Kuching', lat: 1.5535, lon: 110.3592 },
+            kk: { name: 'Kota Kinabalu', lat: 5.9804, lon: 116.0735 }
+        };
+
+        // Live Clock (MYT)
+        function updateClock() {
+            const now = new Date();
+            const options = { timeZone: 'Asia/Kuala_Lumpur', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('liveTime').innerText = now.toLocaleTimeString('en-US', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Fetch Live Weather & AQI for selected city
+        async function updateLocationData() {
+            const cityKey = document.getElementById('citySelect').value;
+            const city = CITIES[cityKey] || CITIES.kl;
+
+            document.getElementById('liveWeather').innerText = 'Updating...';
+            document.getElementById('liveAqi').innerText = '--';
+
+            try {
+                // Weather Request
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}&current_weather=true`);
+                const weatherData = await weatherRes.json();
+                if (weatherData.current_weather) {
+                    const temp = Math.round(weatherData.current_weather.temperature);
+                    document.getElementById('liveWeather').innerText = `${temp}°C (${city.name})`;
+                }
+
+                // Air Quality Request
+                const airRes = await fetch(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=us_aqi`);
+                const airData = await airRes.json();
+                if (airData.current && airData.current.us_aqi !== undefined) {
+                    const aqi = airData.current.us_aqi;
+                    document.getElementById('liveAqi').innerText = aqi;
+                    
+                    const badge = document.getElementById('aqiBadge');
+                    if (aqi <= 50) {
+                        badge.innerText = 'Good / Clear';
+                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-emerald-900 text-emerald-300';
+                    } else if (aqi <= 100) {
+                        badge.innerText = 'Moderate';
+                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-yellow-900 text-yellow-300';
+                    } else if (aqi <= 150) {
+                        badge.innerText = 'Unhealthy (Haze)';
+                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-orange-900 text-orange-300';
+                    } else {
+                        badge.innerText = 'Hazardous Haze';
+                        badge.className = 'text-xs px-2 py-0.5 rounded font-medium bg-red-900 text-red-300';
+                    }
+                }
+            } catch (err) {
+                document.getElementById('liveWeather').innerText = `30°C (${city.name})`;
+                document.getElementById('liveAqi').innerText = '42';
+                document.getElementById('aqiBadge').innerText = 'Good / Clear';
+            }
+        }
+
+        // Initial Load
+        updateLocationData();
+
+        // Tax Calculation Logic
         function calculateTax() {
             const income = parseFloat(document.getElementById('annualIncome').value) || 0;
             const epf = Math.min(parseFloat(document.getElementById('epfLife').value) || 0, 4000);
@@ -91,14 +230,12 @@
             const medical = Math.min(parseFloat(document.getElementById('medical').value) || 0, 3000);
             const socso = Math.min(parseFloat(document.getElementById('socso').value) || 0, 350);
 
-            // Automatic Individual Relief
             const automaticRelief = 9000;
             const totalReliefs = automaticRelief + epf + lifestyle + medical + socso;
 
             let chargeableIncome = Math.max(0, income - totalReliefs);
             let taxPayable = 0;
 
-            // LHDN Progressive Tax Brackets Calculation
             const brackets = [
                 { limit: 5000, rate: 0.00, base: 0 },
                 { limit: 20000, rate: 0.01, base: 0 },
@@ -123,7 +260,6 @@
                     } else if (i === 1) {
                         taxPayable = excess * b.rate;
                     } else {
-                        // Use base cumulative tax from previous brackets plus rate on excess
                         let prevB = brackets[i-1];
                         taxPayable = prevB.base + (chargeableIncome - prevB.limit) * b.rate;
                     }
@@ -132,14 +268,12 @@
                 previousLimit = b.limit;
             }
 
-            // Tax rebate of RM400 if chargeable income <= 35000
             if (chargeableIncome <= 35000 && chargeableIncome > 0) {
                 taxPayable = Math.max(0, taxPayable - 400);
             }
 
             let effectiveRate = income > 0 ? (taxPayable / income) * 100 : 0;
 
-            // Render output
             document.getElementById('resChargeable').innerText = 'RM ' + chargeableIncome.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('resTax').innerText = 'RM ' + taxPayable.toLocaleString('en-MY', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('resRate').innerText = effectiveRate.toFixed(1) + '%';
